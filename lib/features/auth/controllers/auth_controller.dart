@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_angola/models/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_angola/features/auth/repository/auth_repository.dart';
@@ -14,6 +15,11 @@ final authControllerProvider = Provider<AuthController>((ref) {
   );
 });
 
+final userDataAuthProvider = FutureProvider<UserModel?>((ref) {
+  final authController = ref.watch(authControllerProvider);
+  return authController.getUserData();
+});
+
 class AuthController {
   final AuthRepository repository;
   final ProviderRef ref;
@@ -21,6 +27,11 @@ class AuthController {
     required this.repository,
     required this.ref,
   });
+
+  Future<UserModel?> getUserData() async {
+    UserModel? user = await repository.getCurrentUserData();
+    return user;
+  }
 
   Future<void> signUpWithEmailAndPassword(
       BuildContext context, String email, String password, File? profilePic) {
@@ -30,6 +41,15 @@ class AuthController {
       password: password,
       profilePic: profilePic,
       ref: ref,
+    );
+  }
+
+  Future<void> signInWithEmailAndPassword(
+      BuildContext context, String email, String password) {
+    return repository.signInWithEmailAndPassword(
+      context: context,
+      email: email,
+      password: password,
     );
   }
 }

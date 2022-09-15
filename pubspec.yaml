@@ -41,6 +41,7 @@ dependencies:
   convex_bottom_bar: ^3.0.0
   flutter_riverpod: ^1.0.4
   image_picker: ^0.8.5+3
+  uuid: ^3.0.6
 
 dev_dependencies:
   flutter_test:

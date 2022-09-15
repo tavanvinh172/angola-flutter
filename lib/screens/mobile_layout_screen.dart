@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter_angola/color.dart';
+import 'package:flutter_angola/features/post/screens/upload_post_screen.dart';
 import 'package:flutter_angola/widgets/contacts_list.dart';
 
 class MobileLayoutScreen extends StatefulWidget {
@@ -16,9 +17,7 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
     Container(
       color: Colors.red,
     ),
-    Container(
-      color: Colors.red,
-    ),
+    const UploadPostScreen(),
     Container(
       color: Colors.red,
     ),

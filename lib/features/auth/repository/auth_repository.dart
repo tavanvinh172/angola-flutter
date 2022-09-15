@@ -26,6 +26,16 @@ class AuthRepository {
     required this.firestore,
   });
 
+  Future<UserModel?> getCurrentUserData() async {
+    var userData =
+        await firestore.collection('users').doc(auth.currentUser!.uid).get();
+    UserModel? user;
+    if (userData.data() != null) {
+      user = UserModel.fromMap(userData.data()!);
+    }
+    return user;
+  }
+
   Future<void> signUpWithEmailAndPassword({
     required BuildContext context,
     required String email,
@@ -64,6 +74,22 @@ class AuthRepository {
         Navigator.pushNamedAndRemoveUntil(
             context, MobileLayoutScreen.routeName, (route) => false);
       }
+    } on FirebaseException catch (e) {
+      showSnackBar(context: context, content: e.toString());
+    }
+  }
+
+  Future<void> signInWithEmailAndPassword({
+    required BuildContext context,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      if (email.isNotEmpty || password.isNotEmpty) {
+        await auth.signInWithEmailAndPassword(email: email, password: password);
+      }
+      Navigator.pushNamedAndRemoveUntil(
+          context, MobileLayoutScreen.routeName, (route) => false);
     } on FirebaseException catch (e) {
       showSnackBar(context: context, content: e.toString());
     }
