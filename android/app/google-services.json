@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "803632526216",
+    "project_id": "angola-flutter",
+    "storage_bucket": "angola-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803632526216:android:39f65edad45a5e6d5f803d",
+        "android_client_info": {
+          "package_name": "com.example.flutter_angola"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803632526216-eimc94ttcrja6ji4kegmkr94f61tfbjj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flutter_angola",
+            "certificate_hash": "9bec75df360a131998a511f771f679aaace3dc43"
+          }
+        },
+        {
+          "client_id": "803632526216-mh4cne3ae8ek1ok8bs6uf4u6c850ci4d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzknopFKCZGb2BoNHzM1BGeACDDPG07PI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803632526216-mh4cne3ae8ek1ok8bs6uf4u6c850ci4d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "803632526216-mvvpfaf86sfupl47u0of56ejbb0aggi8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterAngola"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
