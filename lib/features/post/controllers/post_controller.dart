@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_angola/features/post/repository/post_repository.dart';
 
-final postConotrllerProvider = Provider<PostController>((ref) {
+final postControllerProvider = Provider<PostController>((ref) {
   final postRepository = ref.watch(postRepositoryProvider);
   return PostController(postRepository: postRepository, ref: ref);
 });
@@ -30,6 +30,17 @@ class PostController {
           username: username,
           ref: ref,
           statusEnum: statusEnum,
+        );
+  }
+
+  void uploadStatusPost(BuildContext context, String? description,
+      String profImage, String username) {
+    ref.read(postRepositoryProvider).uploadStatusPost(
+          context: context,
+          description: description,
+          profImage: profImage,
+          username: username,
+          ref: ref,
         );
   }
 }

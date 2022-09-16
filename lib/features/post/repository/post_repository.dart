@@ -55,10 +55,35 @@ class PostRepository {
         profImage: profImage!,
       );
 
-      await firestore
-          .collection('posts')
-          .doc(auth.currentUser!.uid)
-          .set(post.toMap());
+      await firestore.collection('posts').doc(postId).set(post.toMap());
+    } on FirebaseException catch (e) {
+      showSnackBar(context: context, content: e.toString());
+    }
+  }
+
+  void uploadStatusPost({
+    required BuildContext context,
+    required String? description,
+    required String? profImage,
+    required String username,
+    required ProviderRef ref,
+  }) async {
+    try {
+      var timeUpload = DateTime.now();
+      var postId = const Uuid().v1();
+      Post post = Post(
+        uid: auth.currentUser!.uid,
+        description: description!,
+        likes: [],
+        username: username,
+        postId: postId,
+        type: StatusEnum.text,
+        datePublished: timeUpload,
+        postUrl: '',
+        profImage: profImage!,
+      );
+
+      await firestore.collection('posts').doc(postId).set(post.toMap());
     } on FirebaseException catch (e) {
       showSnackBar(context: context, content: e.toString());
     }

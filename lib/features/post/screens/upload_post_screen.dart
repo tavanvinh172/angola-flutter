@@ -7,6 +7,7 @@ import 'package:flutter_angola/common/screens/loader.dart';
 import 'package:flutter_angola/common/utils/utils.dart';
 import 'package:flutter_angola/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_angola/features/post/controllers/post_controller.dart';
+import 'package:flutter_angola/features/post/widgets/post_card_preview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UploadPostScreen extends ConsumerStatefulWidget {
@@ -31,21 +32,28 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
     if (isSelectImage) {
       typeEnum = StatusEnum.image;
     }
-    ref.read(postConotrllerProvider).uploadImagePost(
-          context,
-          image,
-          statusController.text,
-          profImage,
-          username,
-          typeEnum,
-        );
+    if (image == null) {
+      ref.read(postControllerProvider).uploadStatusPost(
+            context,
+            statusController.text,
+            profImage,
+            username,
+          );
+    } else {
+      ref.read(postControllerProvider).uploadImagePost(
+            context,
+            image,
+            statusController.text,
+            profImage,
+            username,
+            typeEnum,
+          );
+    }
   }
 
   void selectImage() async {
     image = await pickImageFromGallery(context);
   }
-
-  void uploadPost() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +61,7 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
     return Scaffold(
         body: ref.read(userDataAuthProvider).when(
             data: (user) {
+              String username = user!.email.replaceAll('@gmail.com', '');
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -63,7 +72,7 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
                         children: [
                           CircleAvatar(
                             backgroundImage: NetworkImage(
-                              user!.profilePic,
+                              user.profilePic,
                             ),
                             radius: 32,
                           ),
@@ -77,9 +86,6 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
                                   border: InputBorder.none,
                                   suffixIcon: IconButton(
                                       onPressed: () {
-                                        String username = user.email
-                                            .replaceAll('@gmail.com', '');
-
                                         postFile(
                                           user.profilePic,
                                           username,
@@ -185,12 +191,25 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
                           ),
                         ],
                       ),
+                      const SizedBox(
+                        height: 14,
+                      ),
+                      const Text(
+                        'Your post preview',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 23),
+                      ),
+                      const SizedBox(
+                        height: 14,
+                      ),
                       if (image != null)
-                        SizedBox(
-                          width: 300,
-                          height: 300,
-                          child: Image(
-                            image: FileImage(image!),
+                        Expanded(
+                          child: PostCardPreview(
+                            profileImage: user.profilePic,
+                            username: username,
+                            onPressed: () {},
+                            userChooseFile: image,
+                            description: statusController.text,
                           ),
                         )
                     ],

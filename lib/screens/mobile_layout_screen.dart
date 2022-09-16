@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter_angola/color.dart';
+import 'package:flutter_angola/features/feed/screens/feed_screen.dart';
 import 'package:flutter_angola/features/post/screens/upload_post_screen.dart';
 import 'package:flutter_angola/widgets/contacts_list.dart';
 
@@ -14,9 +15,7 @@ class MobileLayoutScreen extends StatefulWidget {
 class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
   List<Widget> pages = [
     const ContactsList(),
-    Container(
-      color: Colors.red,
-    ),
+    const FeedScreen(),
     const UploadPostScreen(),
     Container(
       color: Colors.red,
