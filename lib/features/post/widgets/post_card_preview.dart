@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_angola/color.dart';
+import 'package:flutter_angola/features/post/widgets/video_player_item_preview.dart';
 
 class PostCardPreview extends StatelessWidget {
   const PostCardPreview({
@@ -11,9 +12,11 @@ class PostCardPreview extends StatelessWidget {
     required this.onPressed,
     required this.userChooseFile,
     required this.description,
+    required this.isVideo,
   }) : super(key: key);
   final String? profileImage;
   final String? description;
+  final bool isVideo;
   final String username;
   final VoidCallback onPressed;
   final File? userChooseFile;
@@ -43,16 +46,22 @@ class PostCardPreview extends StatelessWidget {
             onPressed: onPressed,
           ),
         ),
-        Expanded(
-          child: SizedBox(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.35,
-            child: Image(
-              image: FileImage(userChooseFile!),
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
+        !isVideo
+            ? Expanded(
+                child: SizedBox(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  child: Image(
+                    image: FileImage(userChooseFile!),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              )
+            : Expanded(
+                child: VideoPlayerItemPreview(
+                  file: userChooseFile!,
+                ),
+              ),
         Row(
           children: [
             IconButton(

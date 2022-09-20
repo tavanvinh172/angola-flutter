@@ -19,8 +19,9 @@ class UploadPostScreen extends ConsumerStatefulWidget {
 
 class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
   final statusController = TextEditingController();
-  File? image;
+  File? file;
   bool isSelectImage = false;
+  bool isSelectVideo = false;
   @override
   void dispose() {
     super.dispose();
@@ -31,8 +32,10 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
     StatusEnum typeEnum = StatusEnum.text;
     if (isSelectImage) {
       typeEnum = StatusEnum.image;
+    } else if (isSelectVideo) {
+      typeEnum = StatusEnum.video;
     }
-    if (image == null) {
+    if (file == null) {
       ref.read(postControllerProvider).uploadStatusPost(
             context,
             statusController.text,
@@ -42,17 +45,13 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
     } else {
       ref.read(postControllerProvider).uploadImagePost(
             context,
-            image,
+            file,
             statusController.text,
             profImage,
             username,
             typeEnum,
           );
     }
-  }
-
-  void selectImage() async {
-    image = await pickImageFromGallery(context);
   }
 
   @override
@@ -108,10 +107,11 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
                         children: [
                           InkWell(
                             onTap: () async {
-                              image = await pickImageFromGallery(context);
+                              file = await pickImageFromGallery(context);
                               setState(() {
-                                if (image != null) {
+                                if (file != null) {
                                   isSelectImage = true;
+                                  isSelectVideo = false;
                                 }
                               });
                             },
@@ -140,7 +140,15 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
                             width: 8,
                           ),
                           InkWell(
-                            onTap: () {},
+                            onTap: () async {
+                              file = await pickVideoFromGallery(context);
+                              setState(() {
+                                if (file != null) {
+                                  isSelectVideo = true;
+                                  isSelectImage = false;
+                                }
+                              });
+                            },
                             child: Container(
                               decoration: BoxDecoration(
                                   color: Colors.grey[400],
@@ -202,16 +210,26 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
                       const SizedBox(
                         height: 14,
                       ),
-                      if (image != null)
+                      if (file != null)
                         Expanded(
-                          child: PostCardPreview(
-                            profileImage: user.profilePic,
-                            username: username,
-                            onPressed: () {},
-                            userChooseFile: image,
-                            description: statusController.text,
-                          ),
-                        )
+                          child: isSelectImage
+                              ? PostCardPreview(
+                                  profileImage: user.profilePic,
+                                  username: username,
+                                  isVideo: false,
+                                  onPressed: () {},
+                                  userChooseFile: file,
+                                  description: statusController.text,
+                                )
+                              : PostCardPreview(
+                                  profileImage: user.profilePic,
+                                  username: username,
+                                  isVideo: true,
+                                  onPressed: () {},
+                                  userChooseFile: file,
+                                  description: statusController.text,
+                                ),
+                        ),
                     ],
                   ),
                 ),

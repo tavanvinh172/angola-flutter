@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_angola/common/repository/common_firebase_storage_repository.dart';
 import 'package:flutter_angola/common/utils/utils.dart';
+import 'package:flutter_angola/features/auth/screens/login_screen.dart';
 import 'package:flutter_angola/models/user.dart';
 import 'package:flutter_angola/screens/mobile_layout_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,6 +33,17 @@ class AuthRepository {
     UserModel? user;
     if (userData.data() != null) {
       user = UserModel.fromMap(userData.data()!);
+    }
+    return user;
+  }
+
+  Future<UserModel?> getSpecificUserData(String uid) async {
+    var userData = await firestore.collection('users').doc(uid).get();
+    UserModel? user;
+    if (userData.data() != null) {
+      user = UserModel.fromMap(
+        userData.data()!,
+      );
     }
     return user;
   }
@@ -66,6 +78,8 @@ class AuthRepository {
           isOnline: false,
           phoneNumber: '',
           groupId: [],
+          followers: [],
+          following: [],
         );
         await firestore
             .collection('users')
@@ -93,5 +107,11 @@ class AuthRepository {
     } on FirebaseException catch (e) {
       showSnackBar(context: context, content: e.toString());
     }
+  }
+
+  void signOut(BuildContext context) async {
+    await auth.signOut();
+    Navigator.pushNamedAndRemoveUntil(
+        context, LoginScreen.routeName, (route) => false);
   }
 }

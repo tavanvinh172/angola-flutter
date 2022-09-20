@@ -34,15 +34,16 @@ class MyApp extends ConsumerWidget {
             data: (user) {
               if (user == null) {
                 return const LoginScreen();
+              } else {
+                return const ResponsiveLayout(
+                    mobileLayoutScreen: MobileLayoutScreen(),
+                    webLayoutScreen: WebLayoutScreen());
               }
-              return const ResponsiveLayout(
-                  mobileLayoutScreen: MobileLayoutScreen(),
-                  webLayoutScreen: WebLayoutScreen());
             },
             error: (error, constraints) {
               return ErrorScreen(error: error.toString());
             },
-            loading: () => const Loader())
+            loading: () => const Center(child: Loader()))
         // const ResponsiveLayout(
         //   mobileLayoutScreen: MobileLayoutScreen(),
         //   webLayoutScreen: WebLayoutScreen(),

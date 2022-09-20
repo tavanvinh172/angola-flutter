@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_angola/color.dart';
+import 'package:flutter_angola/common/enums/status_enum.dart';
+import 'package:flutter_angola/features/post/widgets/video_player_item.dart';
+import 'package:flutter_angola/features/profile/screens/profile_screen.dart';
 import 'package:intl/intl.dart';
 
 class PostCard extends StatefulWidget {
@@ -31,10 +34,18 @@ class _PostCardState extends State<PostCard> {
             ).copyWith(right: 0),
             child: Row(
               children: <Widget>[
-                CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(
-                    widget.snap.profImage,
+                GestureDetector(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ProfileScreen(
+                                uid: widget.snap.uid,
+                              ))),
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundImage: NetworkImage(
+                      widget.snap.profImage,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -68,10 +79,12 @@ class _PostCardState extends State<PostCard> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.35,
                     width: double.infinity,
-                    child: Image.network(
-                      widget.snap.postUrl,
-                      fit: BoxFit.cover,
-                    ),
+                    child: widget.snap.type == StatusEnum.video
+                        ? VideoPlayerItem(stringUrl: widget.snap.postUrl)
+                        : Image.network(
+                            widget.snap.postUrl,
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ],
               ),

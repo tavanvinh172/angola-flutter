@@ -20,6 +20,12 @@ final userDataAuthProvider = FutureProvider<UserModel?>((ref) {
   return authController.getUserData();
 });
 
+final specifyUserDataAuthProvider =
+    FutureProvider.family<UserModel?, String>((ref, uid) {
+  final authController = ref.watch(authControllerProvider);
+  return authController.getSpecificUserData(uid);
+});
+
 class AuthController {
   final AuthRepository repository;
   final ProviderRef ref;
@@ -30,6 +36,11 @@ class AuthController {
 
   Future<UserModel?> getUserData() async {
     UserModel? user = await repository.getCurrentUserData();
+    return user;
+  }
+
+  Future<UserModel?> getSpecificUserData(String uid) async {
+    UserModel? user = await repository.getSpecificUserData(uid);
     return user;
   }
 
@@ -51,5 +62,9 @@ class AuthController {
       email: email,
       password: password,
     );
+  }
+
+  void signOut(BuildContext context) {
+    repository.signOut(context);
   }
 }

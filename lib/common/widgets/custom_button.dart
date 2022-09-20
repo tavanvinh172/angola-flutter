@@ -6,7 +6,7 @@ ElevatedButton customButton(
   return ElevatedButton(
     onPressed: onPressed,
     style: ElevatedButton.styleFrom(
-        primary: appBarColor, minimumSize: const Size(double.infinity, 50)),
+        primary: appBarColor, minimumSize: const Size(double.infinity, 30)),
     child: text,
   );
 }

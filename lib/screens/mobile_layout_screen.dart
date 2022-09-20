@@ -1,8 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter_angola/color.dart';
 import 'package:flutter_angola/features/feed/screens/feed_screen.dart';
 import 'package:flutter_angola/features/post/screens/upload_post_screen.dart';
+import 'package:flutter_angola/features/profile/screens/profile_screen.dart';
 import 'package:flutter_angola/widgets/contacts_list.dart';
 
 class MobileLayoutScreen extends StatefulWidget {
@@ -13,6 +15,8 @@ class MobileLayoutScreen extends StatefulWidget {
 }
 
 class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
+  bool isProfile = false;
+  int _currentIndex = 0;
   List<Widget> pages = [
     const ContactsList(),
     const FeedScreen(),
@@ -20,18 +24,19 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
     Container(
       color: Colors.red,
     ),
-    Container(
-      color: Colors.red,
-    ),
+    ProfileScreen(
+      uid: FirebaseAuth.instance.currentUser!.uid,
+    )
   ];
-  int _currentIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Angola'),
-        elevation: 0,
-      ),
+      appBar: !isProfile
+          ? AppBar(
+              title: const Text('Angola'),
+              elevation: 0,
+            )
+          : null,
       body: pages[_currentIndex],
       bottomNavigationBar: ConvexAppBar(
           backgroundColor: appBarColor,
@@ -46,6 +51,11 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
           onTap: (int i) {
             setState(() {
               _currentIndex = i;
+              if (_currentIndex == 4) {
+                isProfile = true;
+              } else {
+                isProfile = false;
+              }
             });
           }),
     );

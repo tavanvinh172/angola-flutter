@@ -16,7 +16,7 @@ class ResponsiveLayout extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return LayoutBuilder(builder: (context, constraints) {
-      if (size.width > 680) {
+      if (size.width > 600) {
         return webLayoutScreen;
       } else {
         return mobileLayoutScreen;
