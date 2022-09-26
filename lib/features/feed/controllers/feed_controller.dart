@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_angola/features/feed/repository/feed_repository.dart';
 import 'package:flutter_angola/models/post.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,5 +16,19 @@ class FeedController {
 
   Stream<List<Post>> getPostStream() {
     return feedRepository.getPostStream();
+  }
+
+  void processLike(
+    BuildContext context,
+    String uid,
+    String postId,
+    List likes,
+  ) {
+    feedRepository.processLike(
+      context,
+      uid,
+      postId,
+      likes,
+    );
   }
 }
