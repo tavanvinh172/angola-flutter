@@ -3,8 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_angola/common/utils/utils.dart';
+import 'package:flutter_angola/models/comment.dart';
 import 'package:flutter_angola/models/post.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 final feedRepositoryProvider = Provider<FeedRepository>((ref) {
   return FeedRepository(
@@ -37,6 +39,22 @@ class FeedRepository {
     );
   }
 
+  Stream<List<Comment>> getCommentStream(String postId) {
+    return firestore
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .orderBy('datePublished', descending: true)
+        .snapshots()
+        .asyncMap((event) async {
+      List<Comment> comments = [];
+      for (var document in event.docs) {
+        comments.add(Comment.fromMap(document.data()));
+      }
+      return comments;
+    });
+  }
+
   void processLike(
       BuildContext context, String uid, String postId, List likes) async {
     try {
@@ -49,6 +67,37 @@ class FeedRepository {
           'likes': FieldValue.arrayUnion([uid])
         });
       }
+    } catch (e) {
+      showSnackBar(context: context, content: e.toString());
+    }
+  }
+
+  void processComment(
+    String messageComment,
+    String postID,
+    String profilePic,
+    BuildContext context,
+    String uid,
+    String name,
+  ) async {
+    try {
+      final commentId = const Uuid().v1();
+      Comment comment = Comment(
+        commentId: commentId,
+        text: messageComment,
+        uid: uid,
+        name: name,
+        datePublished: DateTime.now(),
+        profilePic: profilePic,
+      );
+      await firestore
+          .collection('posts')
+          .doc(postID)
+          .collection('comments')
+          .doc(commentId)
+          .set(
+            comment.toMap(),
+          );
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }

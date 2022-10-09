@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_angola/color.dart';
+import 'package:flutter_angola/common/enums/status_enum.dart';
+import 'package:flutter_angola/features/chat/widgets/display_other_type.dart';
 
-class SenderMessageCard extends StatelessWidget {
-  const SenderMessageCard({Key? key, required this.message, required this.date})
+class MyMessageCard extends StatelessWidget {
+  const MyMessageCard(
+      {Key? key, required this.message, required this.date, required this.type})
       : super(key: key);
   final String message;
   final String date;
+  final StatusEnum type;
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: Alignment.centerRight,
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width - 45,
@@ -22,19 +26,23 @@ class SenderMessageCard extends StatelessWidget {
           child: Stack(
             children: [
               Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 30,
-                  top: 5,
-                  bottom: 20,
-                ),
-                child: Text(
-                  message,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ),
+                  padding: type == StatusEnum.text
+                      ? const EdgeInsets.only(
+                          left: 10,
+                          right: 30,
+                          top: 5,
+                          bottom: 20,
+                        )
+                      : const EdgeInsets.only(
+                          left: 5,
+                          right: 5,
+                          top: 5,
+                          bottom: 5,
+                        ),
+                  child: DisplayOtherType(
+                    message: message,
+                    type: type,
+                  )),
               Positioned(
                 bottom: 4,
                 right: 10,

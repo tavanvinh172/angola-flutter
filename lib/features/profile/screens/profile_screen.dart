@@ -6,6 +6,7 @@ import 'package:flutter_angola/color.dart';
 import 'package:flutter_angola/common/utils/utils.dart';
 import 'package:flutter_angola/features/profile/controllers/profile_controller.dart';
 import 'package:flutter_angola/features/profile/widgets/follow_button.dart';
+import 'package:flutter_angola/features/chat/screens/mobile_chat_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_angola/common/screens/error.dart';
@@ -32,7 +33,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   String profilePic = '';
   String phoneNumber = '';
   int postLens = 0;
-  var userData = {};
+  // var userData = {};
   bool isFollowing = false;
   int following = 0;
   int followers = 0;
@@ -71,7 +72,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           .get();
 
       postLens = postSnap.docs.length;
-      userData = userSnap.data()!;
+      // userData = userSnap.data()!;
       followers = userSnap.data()!['followers'].length;
       following = userSnap.data()!['following'].length;
       isFollowing = userSnap
@@ -195,7 +196,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         backgroundColor: appBarColor,
                         borderColor: Colors.white,
                         textColor: Colors.white,
-                        function: () {},
+                        function: () => Navigator.pushNamed(
+                            context, MobileChatScreen.routeName, arguments: {
+                          'uid': widget.uid,
+                          'email': email,
+                          'profilePic': profilePic
+                        }),
                       ),
                       FollowButton(
                         text: 'Call',

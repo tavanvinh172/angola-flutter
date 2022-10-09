@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_angola/common/enums/status_enum.dart';
 import 'package:flutter_angola/common/repository/common_firebase_storage_repository.dart';
 import 'package:flutter_angola/common/utils/utils.dart';
+import 'package:flutter_angola/models/notify.dart';
 import 'package:flutter_angola/models/post.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -43,6 +44,12 @@ class PostRepository {
             'posts/${statusEnum.type}/${auth.currentUser!.uid}/$postId',
             image!,
           );
+      Notify notify = Notify(
+        uid: auth.currentUser!.uid,
+        notifyId: postId,
+        datePublished: timeUpload,
+        message: "$username uploads a post",
+      );
       Post post = Post(
         uid: auth.currentUser!.uid,
         description: description!,
@@ -54,7 +61,10 @@ class PostRepository {
         postUrl: imageUrl,
         profImage: profImage!,
       );
-
+      await firestore
+          .collection('notification')
+          .doc(postId)
+          .set(notify.toMap());
       await firestore.collection('posts').doc(postId).set(post.toMap());
     } on FirebaseException catch (e) {
       showSnackBar(context: context, content: e.toString());
@@ -71,6 +81,12 @@ class PostRepository {
     try {
       var timeUpload = DateTime.now();
       var postId = const Uuid().v1();
+      Notify notify = Notify(
+        uid: auth.currentUser!.uid,
+        notifyId: postId,
+        datePublished: timeUpload,
+        message: "$username uploads a status",
+      );
       Post post = Post(
         uid: auth.currentUser!.uid,
         description: description!,
@@ -82,6 +98,10 @@ class PostRepository {
         postUrl: '',
         profImage: profImage!,
       );
+      await firestore
+          .collection('notification')
+          .doc(postId)
+          .set(notify.toMap());
 
       await firestore.collection('posts').doc(postId).set(post.toMap());
     } on FirebaseException catch (e) {

@@ -2,10 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter_angola/color.dart';
+import 'package:flutter_angola/features/chat/widgets/contacts_list.dart';
 import 'package:flutter_angola/features/feed/screens/feed_screen.dart';
+import 'package:flutter_angola/features/notification/screens/notification_screen.dart';
 import 'package:flutter_angola/features/post/screens/upload_post_screen.dart';
 import 'package:flutter_angola/features/profile/screens/profile_screen.dart';
-import 'package:flutter_angola/widgets/contacts_list.dart';
 
 class MobileLayoutScreen extends StatefulWidget {
   const MobileLayoutScreen({Key? key}) : super(key: key);
@@ -16,14 +17,13 @@ class MobileLayoutScreen extends StatefulWidget {
 
 class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
   bool isProfile = false;
+  bool isNotification = false;
   int _currentIndex = 0;
   List<Widget> pages = [
     const ContactsList(),
     const FeedScreen(),
     const UploadPostScreen(),
-    Container(
-      color: Colors.red,
-    ),
+    const NotificationScreen(),
     ProfileScreen(
       uid: FirebaseAuth.instance.currentUser!.uid,
     )
@@ -31,7 +31,7 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: !isProfile
+      appBar: !isProfile && !isNotification
           ? AppBar(
               title: const Text('Angola'),
               elevation: 0,
@@ -53,8 +53,11 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
               _currentIndex = i;
               if (_currentIndex == 4) {
                 isProfile = true;
+              } else if (_currentIndex == 3) {
+                isNotification = true;
               } else {
                 isProfile = false;
+                isNotification = false;
               }
             });
           }),

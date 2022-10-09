@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_angola/color.dart';
+import 'package:flutter_angola/common/enums/status_enum.dart';
+import 'package:flutter_angola/features/chat/widgets/display_other_type.dart';
 
-class MyMessageCard extends StatelessWidget {
-  const MyMessageCard({Key? key, required this.message, required this.date})
+class SenderMessageCard extends StatelessWidget {
+  const SenderMessageCard(
+      {Key? key, required this.message, required this.date, required this.type})
       : super(key: key);
   final String message;
   final String date;
+  final StatusEnum type;
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.centerRight,
+      alignment: Alignment.centerLeft,
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width - 45,
@@ -28,12 +32,7 @@ class MyMessageCard extends StatelessWidget {
                   top: 5,
                   bottom: 20,
                 ),
-                child: Text(
-                  message,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
+                child: DisplayOtherType(type: type, message: message),
               ),
               Positioned(
                 bottom: 4,

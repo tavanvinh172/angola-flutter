@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_angola/color.dart';
+import 'package:flutter_angola/features/post/widgets/comment_screen.dart';
 import 'package:flutter_angola/features/post/widgets/video_player_item_preview.dart';
 
 class PostCardPreview extends StatelessWidget {
@@ -73,7 +74,10 @@ class PostCardPreview extends StatelessWidget {
               ),
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () => Navigator.pushNamed(
+                context,
+                CommentScreen.routeName,
+              ),
               icon: const Icon(
                 Icons.comment,
                 color: appBarColor,

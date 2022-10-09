@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_angola/color.dart';
 import 'package:flutter_angola/common/enums/status_enum.dart';
+import 'package:flutter_angola/common/utils/utils.dart';
 import 'package:flutter_angola/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_angola/features/feed/controllers/feed_controller.dart';
+import 'package:flutter_angola/features/post/widgets/comment_screen.dart';
 import 'package:flutter_angola/features/post/widgets/video_player_item.dart';
 import 'package:flutter_angola/features/profile/screens/profile_screen.dart';
 import 'package:flutter_angola/models/user.dart';
@@ -25,6 +28,8 @@ class _PostCardState extends ConsumerState<PostCard> {
   List<String> groupId = [];
   List<String> followers = [];
   List<String> following = [];
+  int commentLength = 0;
+  int favoriteLength = 0;
   UserModel getCurrentUser() {
     ref.read(userDataAuthProvider).whenData((value) {
       uid = value!.uid;
@@ -50,17 +55,40 @@ class _PostCardState extends ConsumerState<PostCard> {
   }
 
   void likePost() {
-    ref.read(feedControllerProvider).processLike(
+    ref.read(feedControllerProvider).likeController(
           context,
-          uid,
           widget.snap.postId,
           widget.snap.likes,
         );
   }
 
+  void fetCommentLength() async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(widget.snap.postId)
+          .collection('comments')
+          .get();
+      commentLength = snapshot.docs.length;
+    } catch (e) {
+      showSnackBar(
+        context: context,
+        content: e.toString(),
+      );
+    }
+  }
+
+  void fetchFavoriteLength() async {
+    try {} catch (e) {
+      showSnackBar(context: context, content: e.toString());
+    }
+  }
+
   @override
   void initState() {
+    fetCommentLength();
     getCurrentUser();
+    fetchFavoriteLength();
     super.initState();
   }
 
@@ -151,7 +179,7 @@ class _PostCardState extends ConsumerState<PostCard> {
             children: <Widget>[
               GestureDetector(
                   onTap: likePost,
-                  child: widget.snap.likes.contains(widget.snap.uid)
+                  child: widget.snap.likes.contains(uid)
                       ? const Icon(
                           Icons.favorite,
                           color: Colors.red,
@@ -161,7 +189,9 @@ class _PostCardState extends ConsumerState<PostCard> {
                 icon: const Icon(
                   Icons.comment_outlined,
                 ),
-                onPressed: () {},
+                onPressed: () => Navigator.pushNamed(
+                    context, CommentScreen.routeName,
+                    arguments: widget.snap.postId),
               ),
               IconButton(
                   icon: const Icon(
@@ -189,7 +219,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                         .subtitle2!
                         .copyWith(fontWeight: FontWeight.w800),
                     child: Text(
-                      '${43} likes',
+                      '$favoriteLength likes',
                       style: Theme.of(context).textTheme.bodyText2,
                     )),
                 Container(
@@ -218,9 +248,9 @@ class _PostCardState extends ConsumerState<PostCard> {
                 InkWell(
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: const Text(
-                        'View all 34 comments',
-                        style: TextStyle(
+                      child: Text(
+                        'View all $commentLength comments',
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Colors.black,
                         ),
