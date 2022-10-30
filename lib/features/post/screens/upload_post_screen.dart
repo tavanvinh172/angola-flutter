@@ -58,6 +58,7 @@ class _UploadPostScreenState extends ConsumerState<UploadPostScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: ref.read(userDataAuthProvider).when(
             data: (user) {
               String username = user!.email.replaceAll('@gmail.com', '');

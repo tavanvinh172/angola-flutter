@@ -5,16 +5,37 @@ import 'package:flutter_angola/features/notification/controllers/notify_controll
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class NotificationScreen extends ConsumerWidget {
-  const NotificationScreen({super.key});
+class NotificationScreen extends ConsumerStatefulWidget {
+  const NotificationScreen({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _NotificationScreenState();
+}
+
+class _NotificationScreenState extends ConsumerState<NotificationScreen> {
+  bool _visible = true;
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(hours: 50), () {
+      if (mounted) {
+        setState(() {
+          _visible = false;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          title: const Text('Notification'),
-        ),
-        body: ref.watch(notifyControllerProvider).when(data: (notifies) {
+      appBar: AppBar(
+        elevation: 0,
+        title: const Text('Notifications'),
+      ),
+      body: ref.watch(notifyControllerProvider).when(
+        data: (notifies) {
           return ListView.builder(
             itemCount: notifies.length,
             itemBuilder: (context, index) {
@@ -22,30 +43,43 @@ class NotificationScreen extends ConsumerWidget {
               return Column(
                 children: [
                   const Padding(padding: EdgeInsets.all(8.0)),
-                  ListTile(
-                    leading: const CircleAvatar(
-                        radius: 32,
-                        backgroundImage: NetworkImage(
-                            'https://images.unsplash.com/photo-1665240571093-eb9be84fb182?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHwyfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=600&q=60')),
-                    title: Text(
-                      notify.message,
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                    trailing: Text(
-                      DateFormat.Hm().format(notify.datePublished),
-                      style: const TextStyle(fontSize: 13),
+                  Visibility(
+                    maintainSize: true,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    visible: _visible,
+                    child: InkWell(
+                      onTap: () {},
+                      child: ListTile(
+                        leading: CircleAvatar(
+                            radius: 32,
+                            backgroundImage: NetworkImage(notify.profileImg)),
+                        title: Text(
+                          notify.message,
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                        trailing: Text(
+                          DateFormat.Hm().format(notify.datePublished),
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
                     ),
                   ),
+                  const Divider()
                 ],
               );
             },
           );
-        }, error: (error, stackTrace) {
+        },
+        error: (error, stackTrace) {
           return ErrorScreen(error: error.toString());
-        }, loading: () {
+        },
+        loading: () {
           return const Center(
             child: Loader(),
           );
-        }));
+        },
+      ),
+    );
   }
 }

@@ -7,12 +7,31 @@ import 'package:flutter_angola/features/chat/widgets/sender_message_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class ChatList extends ConsumerWidget {
-  const ChatList({Key? key, required this.uid}) : super(key: key);
+class ChatList extends ConsumerStatefulWidget {
+  const ChatList({super.key, required this.uid});
   final String uid;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(messageContactProvider(uid)).when(data: (messages) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _ChatListState();
+}
+
+class _ChatListState extends ConsumerState<ChatList> {
+  final scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ref.watch(messageContactProvider(widget.uid)).when(data: (messages) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(
+          scrollController.position.maxScrollExtent,
+        );
+      });
       return Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -22,10 +41,11 @@ class ChatList extends ConsumerWidget {
           ),
         ),
         child: ListView.builder(
-          shrinkWrap: true,
+          controller: scrollController,
           itemBuilder: (context, index) {
             final message = messages[index];
-            if (message.senderId != uid) {
+
+            if (message.senderId != widget.uid) {
               return MyMessageCard(
                 message: message.text,
                 date: DateFormat.Hm().format(message.timeSent),

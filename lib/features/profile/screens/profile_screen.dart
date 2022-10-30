@@ -22,6 +22,7 @@ class ProfileScreen extends ConsumerStatefulWidget {
     required this.uid,
     Key? key,
   }) : super(key: key);
+  static const String routeName = '/profile-screen';
   final String uid;
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ProfileScreenState();
@@ -242,8 +243,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           return Image(
                             image: NetworkImage(posts['postUrl']),
                           );
-                        } else {
+                        } else if (posts['type'] == 'video') {
                           return VideoPlayerItem(stringUrl: posts['postUrl']);
+                        } else {
+                          return const SizedBox();
                         }
                       });
                 },

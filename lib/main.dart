@@ -25,12 +25,12 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData.light()
-            .copyWith(appBarTheme: const AppBarTheme(color: appBarColor)),
-        onGenerateRoute: (settings) => generateRoute(settings),
-        home: ref.watch(userDataAuthProvider).when(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.light()
+          .copyWith(appBarTheme: const AppBarTheme(color: appBarColor)),
+      onGenerateRoute: (settings) => generateRoute(settings),
+      home: ref.watch(userDataAuthProvider).when(
             data: (user) {
               if (user == null) {
                 return const LoginScreen();
@@ -43,12 +43,16 @@ class MyApp extends ConsumerWidget {
             error: (error, constraints) {
               return ErrorScreen(error: error.toString());
             },
-            loading: () => const Center(child: Loader()))
-        // const ResponsiveLayout(
-        //   mobileLayoutScreen: MobileLayoutScreen(),
-        //   webLayoutScreen: WebLayoutScreen(),
-        // )
-        // const LoginScreen(),
-        );
+            loading: () => const Center(
+              child: Loader(),
+            ),
+          ),
+      // const ResponsiveLayout(
+      //   mobileLayoutScreen: MobileLayoutScreen(),
+      //   webLayoutScreen: WebLayoutScreen(),
+      // )
+      // const LoginScreen()
+      // const ,
+    );
   }
 }

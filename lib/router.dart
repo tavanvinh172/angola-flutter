@@ -4,6 +4,7 @@ import 'package:flutter_angola/features/auth/screens/login_screen.dart';
 import 'package:flutter_angola/features/auth/screens/sign_up_screen.dart';
 import 'package:flutter_angola/features/post/widgets/comment_screen.dart';
 import 'package:flutter_angola/features/chat/screens/mobile_chat_screen.dart';
+import 'package:flutter_angola/features/profile/screens/profile_screen.dart';
 import 'package:flutter_angola/screens/mobile_layout_screen.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -31,6 +32,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
           builder: (context) => CommentScreen(
                 postID: postId,
+              ));
+    case ProfileScreen.routeName:
+      final uid = settings.arguments as String;
+      return MaterialPageRoute(
+          builder: (context) => ProfileScreen(
+                uid: uid,
               ));
     default:
       return MaterialPageRoute(

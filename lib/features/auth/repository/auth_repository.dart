@@ -48,6 +48,29 @@ class AuthRepository {
     return user;
   }
 
+  Stream<List<UserModel?>> searchingUser(String username) {
+    return firestore
+        .collection('users')
+        .where('email', isLessThanOrEqualTo: username)
+        .snapshots()
+        .asyncMap((event) async {
+      List<UserModel?> users = [];
+      for (var document in event.docs) {
+        users.add(UserModel.fromMap(document.data()));
+      }
+      return users;
+    });
+    // List<UserModel?> users = [];
+    // var userData = await firestore
+    //     .collection('users')
+    //     .where('email', isGreaterThanOrEqualTo: '$username@gmail.com')
+    //     .get();
+    // for (var document in userData.docs) {
+    //   users.add(UserModel.fromMap(document.data()));
+    // }
+    // return users;
+  }
+
   Future<void> signUpWithEmailAndPassword({
     required BuildContext context,
     required String email,

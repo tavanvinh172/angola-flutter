@@ -18,6 +18,7 @@ class MobileLayoutScreen extends StatefulWidget {
 class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
   bool isProfile = false;
   bool isNotification = false;
+  bool isFeedScreen = false;
   int _currentIndex = 0;
   List<Widget> pages = [
     const ContactsList(),
@@ -31,7 +32,8 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: !isProfile && !isNotification
+      resizeToAvoidBottomInset: false,
+      appBar: !isProfile && !isNotification && !isFeedScreen
           ? AppBar(
               title: const Text('Angola'),
               elevation: 0,
@@ -55,9 +57,12 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
                 isProfile = true;
               } else if (_currentIndex == 3) {
                 isNotification = true;
+              } else if (_currentIndex == 1) {
+                isFeedScreen = true;
               } else {
                 isProfile = false;
                 isNotification = false;
+                isFeedScreen = false;
               }
             });
           }),

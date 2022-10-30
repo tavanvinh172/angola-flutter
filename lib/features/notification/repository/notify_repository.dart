@@ -15,8 +15,8 @@ class NotifyRepository {
 
   Stream<List<Notify>> getNotificationStream() {
     return firestore
-        .collection('notification')
-        .orderBy('datePublished')
+        .collection('notifications')
+        .orderBy('datePublished', descending: true)
         .snapshots()
         .map((event) {
       List<Notify> notifies = [];

@@ -44,11 +44,24 @@ class PostRepository {
             'posts/${statusEnum.type}/${auth.currentUser!.uid}/$postId',
             image!,
           );
+      String notifyStatus = '';
+      switch (statusEnum) {
+        case StatusEnum.image:
+          notifyStatus = "$username uploads an image";
+          break;
+        case StatusEnum.video:
+          notifyStatus = "$username uploads an video";
+          break;
+        default:
+          notifyStatus = "$username uploads an image";
+      }
       Notify notify = Notify(
         uid: auth.currentUser!.uid,
         notifyId: postId,
+        profileImg: profImage!,
+        statusEnum: statusEnum,
         datePublished: timeUpload,
-        message: "$username uploads a post",
+        message: notifyStatus,
       );
       Post post = Post(
         uid: auth.currentUser!.uid,
@@ -59,10 +72,10 @@ class PostRepository {
         type: statusEnum,
         datePublished: timeUpload,
         postUrl: imageUrl,
-        profImage: profImage!,
+        profImage: profImage,
       );
       await firestore
-          .collection('notification')
+          .collection('notifications')
           .doc(postId)
           .set(notify.toMap());
       await firestore.collection('posts').doc(postId).set(post.toMap());
@@ -84,7 +97,9 @@ class PostRepository {
       Notify notify = Notify(
         uid: auth.currentUser!.uid,
         notifyId: postId,
+        profileImg: profImage!,
         datePublished: timeUpload,
+        statusEnum: StatusEnum.text,
         message: "$username uploads a status",
       );
       Post post = Post(
@@ -96,10 +111,10 @@ class PostRepository {
         type: StatusEnum.text,
         datePublished: timeUpload,
         postUrl: '',
-        profImage: profImage!,
+        profImage: profImage,
       );
       await firestore
-          .collection('notification')
+          .collection('notifications')
           .doc(postId)
           .set(notify.toMap());
 

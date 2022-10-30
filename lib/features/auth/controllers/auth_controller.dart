@@ -26,6 +26,12 @@ final specifyUserDataAuthProvider =
   return authController.getSpecificUserData(uid);
 });
 
+final searchUserProvider =
+    StreamProvider.family<List<UserModel?>, String>((ref, username) {
+  final authController = ref.watch(authControllerProvider);
+  return authController.searchingUser(username);
+});
+
 class AuthController {
   final AuthRepository repository;
   final ProviderRef ref;
@@ -62,6 +68,10 @@ class AuthController {
       email: email,
       password: password,
     );
+  }
+
+  Stream<List<UserModel?>> searchingUser(String username) {
+    return repository.searchingUser(username);
   }
 
   void signOut(BuildContext context) {
