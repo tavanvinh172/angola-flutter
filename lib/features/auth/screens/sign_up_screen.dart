@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_angola/common/utils/utils.dart';
 import 'package:flutter_angola/common/widgets/custom_button.dart';
 import 'package:flutter_angola/features/auth/controllers/auth_controller.dart';
+import 'package:flutter_angola/models/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -27,7 +29,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             password,
             image,
           );
+      saveCurrentUser(email);
     }
+  }
+
+  void saveCurrentUser(String email) async {
+    final preferences = await SharedPreferences.getInstance();
+    preferences.setString(
+      UserModel.userPersistenceKey,
+      emailController.text,
+    );
   }
 
   void showDialogPickerImage(BuildContext context) async {
@@ -72,6 +83,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             ],
           );
         });
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override

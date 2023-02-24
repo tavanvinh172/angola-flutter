@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_angola/common/widgets/custom_button.dart';
 import 'package:flutter_angola/features/auth/controllers/auth_controller.dart';
 import 'package:flutter_angola/features/auth/screens/sign_up_screen.dart';
+import 'package:flutter_angola/models/user.dart';
+import 'package:flutter_angola/screens/mobile_layout_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -15,9 +18,35 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final emailController = TextEditingController();
   final passwController = TextEditingController();
 
+  void saveCurrentUser(String username) async {
+    final preferences = await SharedPreferences.getInstance();
+    preferences.setString(
+      UserModel.userPersistenceKey,
+      emailController.text,
+    );
+  }
+
+  void getCurrentUser() async {
+    final preferences = await SharedPreferences.getInstance();
+    if (preferences.containsKey(
+      UserModel.userPersistenceKey,
+    )) {
+      setState(() {
+        final data = preferences.getString(UserModel.userPersistenceKey);
+        emailController.text = data!;
+      });
+    }
+    print('heee${emailController.text}');
+    if (emailController.text.isNotEmpty) {
+      Navigator.pushNamedAndRemoveUntil(
+          context, MobileLayoutScreen.routeName, (route) => false);
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
+    getCurrentUser();
     emailController.dispose();
     passwController.dispose();
   }
@@ -31,6 +60,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             email,
             password,
           );
+      saveCurrentUser(email);
     }
   }
 

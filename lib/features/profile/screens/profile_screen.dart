@@ -9,13 +9,11 @@ import 'package:flutter_angola/features/profile/widgets/follow_button.dart';
 import 'package:flutter_angola/features/chat/screens/mobile_chat_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:flutter_angola/common/screens/error.dart';
-import 'package:flutter_angola/common/screens/loader.dart';
 import 'package:flutter_angola/common/widgets/custom_button.dart';
 import 'package:flutter_angola/features/auth/controllers/auth_controller.dart';
-import 'package:flutter_angola/features/post/widgets/video_player_item.dart';
 import 'package:flutter_angola/features/profile/widgets/build_stat_column.dart';
 import 'package:flutter_angola/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({
@@ -85,8 +83,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
+  void removeStatePersistence() async {
+    final preferences = await SharedPreferences.getInstance();
+    preferences.remove(UserModel.userPersistenceKey);
+  }
+
   void signOutUser(WidgetRef ref, BuildContext context) {
     ref.read(authControllerProvider).signOut(context);
+    removeStatePersistence();
   }
 
   @override
@@ -216,42 +220,42 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             const SizedBox(
               height: 16,
             ),
-            Expanded(
-              child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                future: FirebaseFirestore.instance
-                    .collection('posts')
-                    .where('uid', isEqualTo: userModel.uid)
-                    .get(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: Loader(),
-                    );
-                  }
-                  if (snapshot.hasError) {
-                    return ErrorScreen(error: snapshot.error.toString());
-                  }
-                  return GridView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                      ),
-                      itemBuilder: (context, index) {
-                        final posts = snapshot.data!.docs[index];
-                        if (posts['type'] == 'image') {
-                          return Image(
-                            image: NetworkImage(posts['postUrl']),
-                          );
-                        } else if (posts['type'] == 'video') {
-                          return VideoPlayerItem(stringUrl: posts['postUrl']);
-                        } else {
-                          return const SizedBox();
-                        }
-                      });
-                },
-              ),
-            )
+            // Expanded(
+            //   child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            //     future: FirebaseFirestore.instance
+            //         .collection('posts')
+            //         .where('uid', isEqualTo: userModel.uid)
+            //         .get(),
+            //     builder: (context, snapshot) {
+            //       if (snapshot.connectionState == ConnectionState.waiting) {
+            //         return const Center(
+            //           child: Loader(),
+            //         );
+            //       }
+            //       if (snapshot.hasError) {
+            //         return ErrorScreen(error: snapshot.error.toString());
+            //       }
+            //       return GridView.builder(
+            //           itemCount: snapshot.data!.docs.length,
+            //           gridDelegate:
+            //               const SliverGridDelegateWithFixedCrossAxisCount(
+            //             crossAxisCount: 3,
+            //           ),
+            //           itemBuilder: (context, index) {
+            //             final posts = snapshot.data!.docs[index];
+            //             if (posts['type'] == 'image') {
+            //               return Image(
+            //                 image: NetworkImage(posts['postUrl']),
+            //               );
+            //             } else if (posts['type'] == 'video') {
+            //               return VideoPlayerItem(stringUrl: posts['postUrl']);
+            //             } else {
+            //               return const SizedBox();
+            //             }
+            //           });
+            //     },
+            //   ),
+            // )
           ],
         ),
       ),

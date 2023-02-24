@@ -1,4 +1,5 @@
 class UserModel {
+  static const String userPersistenceKey = 'userKey';
   final String uid;
   final String email;
   final String profilePic;

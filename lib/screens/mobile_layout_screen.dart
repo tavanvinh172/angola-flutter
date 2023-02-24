@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter_angola/color.dart';
 import 'package:flutter_angola/features/chat/widgets/contacts_list.dart';
 import 'package:flutter_angola/features/feed/screens/feed_screen.dart';
@@ -40,16 +39,42 @@ class _MobileLayoutScreenState extends State<MobileLayoutScreen> {
             )
           : null,
       body: pages[_currentIndex],
-      bottomNavigationBar: ConvexAppBar(
+      bottomNavigationBar: BottomNavigationBar(
           backgroundColor: appBarColor,
+          selectedItemColor: appBarColor,
           items: const [
-            TabItem(icon: Icons.message, title: 'Message'),
-            TabItem(icon: Icons.home, title: 'Home'),
-            TabItem(icon: Icons.add, title: 'Add'),
-            TabItem(icon: Icons.notifications, title: 'Message'),
-            TabItem(icon: Icons.people, title: 'Profile'),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.message,
+                  color: Colors.black,
+                ),
+                label: 'Message'),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.home,
+                  color: Colors.black,
+                ),
+                label: 'Home'),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.black,
+                ),
+                label: 'Add'),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.notifications,
+                  color: Colors.black,
+                ),
+                label: 'Message'),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.people,
+                  color: Colors.black,
+                ),
+                label: 'Profile'),
           ],
-          initialActiveIndex: 2, //optional, default as 0
+          currentIndex: 2, //optional, default as 0
           onTap: (int i) {
             setState(() {
               _currentIndex = i;
